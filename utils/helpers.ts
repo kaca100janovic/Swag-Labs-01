@@ -110,7 +110,22 @@ export async function emptyPostalCode(page: Page) {
   }
 
 
-  // 
+  // Problem user
+
+  export async function loginProblemUser(page: Page){
+  
+      await page.goto('https://www.saucedemo.com/');
+      await page.fill('#user-name', 'problem_user');
+      await page.fill('#password', 'secret_sauce');
+      await page.click('#login-button');
+      await page.waitForURL('https://www.saucedemo.com/inventory.html');
+      
+      page.on('dialog', async(dialog)=>{
+      await dialog.accept()
+         });
+      
+}
+
 type EmptyField = 'firstName' | 'lastName' | 'postalCode' | null;
 
 export async function checkEmptyCheckoutFields(page: Page): Promise<EmptyField> {

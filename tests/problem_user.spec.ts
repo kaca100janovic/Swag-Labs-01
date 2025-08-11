@@ -1,32 +1,49 @@
 import { test, expect } from '@playwright/test';
-import {initializeLoginPage, login,userInformation, yourCart ,emptyFirstName, emptyLastName,emptyPostalCode, addItemsToCart, items, sortedAZ, sortedZA, checkEmptyCheckoutFields} from '../utils/helpers';
-
-
-test.only('dodavanje vise itema', async({page}) =>{
-  await login(page);
-  const selectedItems = [items[0],items[1], items[2]];
-
-  await addItemsToCart(page, selectedItems);
-
-  const checkout = page.locator('#checkout');
-  await checkout.click();
- 
-await userInformation(page);
+import {loginProblemUser ,userInformation, yourCart ,emptyFirstName, emptyLastName,emptyPostalCode, addItemsToCart, items, sortedAZ, sortedZA, checkEmptyCheckoutFields} from '../utils/helpers';
 
 
 
-await page.locator('#continue').click();
 
- const emptyField = await checkEmptyCheckoutFields(page);
+test('No error message on empty fields but show alert on continue', async ({ page }) => {
+  await loginProblemUser(page);
+ await addItemsToCart(page, [items[0]]);
 
-  if (emptyField) {
-    // Na primer, ako je prazno First Name
-    await expect(page.locator('.error-message-container')).toHaveText(
-      emptyField === 'firstName' ? 'Error: First Name is required' :
-      emptyField === 'lastName' ? 'Error: Last Name is required' :
-      'Error: Postal Code is required'
-    );
-  } else {
-    throw new Error('Sva polja su popunjena, nije očekivano');
-  }
+  // Idi na korpu i checkout
+  await page.locator('.shopping_cart_link').click();
+  await page.locator('#checkout').click();
+
+  // Ostavi prazna polja
+  await page.fill('#first-name', '');
+  await page.fill('#last-name', '');
+  await page.fill('#postal-code', '');
+
+  // Klik na Continue
+  await page.locator('#continue').click();
+
+  // Provera da je error poruka za First Name vidljiva
+  await expect(page.locator('.error-message-container')).toHaveText('Error: First Name is required');
+});
+
+test('error input', async ({ page }) => {
+  await loginProblemUser(page);
+ await addItemsToCart(page, [items[0]]);
+
+  // Idi na korpu i checkout
+  await page.locator('.shopping_cart_link').click();
+  await page.locator('#checkout').click();
+
+  // Ostavi prazna polja
+  await page.fill('#first-name', 'Katarina');
+  await page.fill('#last-name', 'Stojanovic');
+  await page.fill('#postal-code', '1236');
+
+
+  await page.locator('#continue').click();
+
+
+  await expect(page.locator('#first-name')).toHaveText('Katarina');
+
+
+
+
 });
