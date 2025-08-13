@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import {loginProblemUser ,userInformation, yourCart ,emptyFirstName, emptyLastName,emptyPostalCode, addItemsToCart, items, sortedAZ, sortedZA, checkEmptyCheckoutFields} from '../utils/helpers';
 
-// test('error input', async ({ page }) => {
+// test('should show alert when continuing with empty fields', async ({ page }) => {
 //   await loginProblemUser(page);
 //   await addItemsToCart(page, [items[0]]);
 

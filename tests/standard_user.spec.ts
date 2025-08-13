@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import {initializeLoginPage, login,userInformation, yourCart ,emptyFirstName, emptyLastName,emptyPostalCode, addItemsToCart, items, sortedAZ, sortedZA } from '../utils/helpers';
 
 
-test('Successful login', async ({ page }) => {
+test('should log in successfully with valid credentials', async ({ page }) => {
 const { userName, password, signIn } = await initializeLoginPage(page);
 
 await userName.fill('standard_user');
@@ -12,7 +12,7 @@ await signIn.click();
 await expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');
 });
 
-test('Incorect password', async ({ page }) => {
+test('Should display error message for incorrect password', async ({ page }) => {
 const { userName, password, signIn } = await initializeLoginPage(page);
 
 await userName.fill('standard_user');
@@ -25,7 +25,7 @@ await expect(errorMessage).toHaveText('Epic sadface: Username and password do no
 
 });
 
-test('Logout', async ({ page }) => {
+test('Should log out successfully', async ({ page }) => {
 await login(page);
 await page.locator('#react-burger-menu-btn').click();
 await page.locator('#logout_sidebar_link').click();
@@ -34,7 +34,7 @@ await expect(page).toHaveURL('https://www.saucedemo.com/');
 });
 
 
-test('Buy one item', async({page}) =>{
+test('Should successfully purchase a single item', async({page}) =>{
 await login(page);
 
 const item = page.locator('.inventory_item_name', { hasText: 'Sauce Labs Backpack' });
@@ -55,7 +55,7 @@ await expect(page.locator('.app_logo')).toHaveText('Swag Labs');
 
 });
 
-test('Remove item from cart', async({page}) =>{
+test('Should remove an item from the cart successfully', async({page}) =>{
 await login(page);
 
 const item = page.locator('#add-to-cart-sauce-labs-backpack');
@@ -68,7 +68,7 @@ await expect(page.locator('.cart_item')).toHaveCount(0);
 });
 
 
-test('empty first name', async({page}) =>{
+test('should display error when first name is empty', async({page}) =>{
 await login(page);
 await yourCart(page);
 await emptyFirstName(page);
@@ -77,7 +77,7 @@ await page.locator('#continue').click();
 await expect(page.locator('.error-message-container')).toHaveText('Error: First Name is required');
 });
 
-test('empty last name', async({page}) =>{
+test('should display error when last name is empty', async({page}) =>{
 await login(page);
 await yourCart(page);
 await emptyLastName(page);
@@ -86,7 +86,7 @@ await page.locator('#continue').click();
 await expect(page.locator('.error-message-container')).toHaveText('Error: Last Name is required');
 });
 
-test('empty postal code', async({page}) =>{
+test('should display error when postal code is empty', async({page}) =>{
 await login(page);
 await yourCart(page);
 await emptyPostalCode(page);
@@ -95,7 +95,7 @@ await page.locator('#continue').click();
 await expect(page.locator('.error-message-container')).toHaveText('Error: Postal Code is required');
 });
 
-test('dodavanje vise itema', async({page}) =>{
+test('should add multiple items to the cart successfully', async({page}) =>{
 await login(page);
 const selectedItems = [items[0],items[1], items[2]];
 
@@ -118,7 +118,7 @@ await expect(page.locator('.app_logo')).toHaveText('Swag Labs');
 });
 
 
-test('Product sort AZ', async({page}) =>{
+test('should sort products alphabetically from A to Z', async({page}) =>{
 await login(page);
 
 const productSort = page.locator('.product_sort_container');
@@ -132,7 +132,7 @@ await sortedAZ(page);
 
 });
 
-test('Product sort ZA', async({page}) =>{
+test('should sort products alphabetically from Z to A', async({page}) =>{
 await login(page);
 
 const productSort = page.locator('.product_sort_container');
@@ -145,7 +145,7 @@ await sortedZA(page);
 
 });
 
-test('Tab button', async({page}) =>{
+test('should move focus to the next input when pressing Tab"', async({page}) =>{
 await login(page);
 await yourCart(page);
 await expect(page).toHaveURL('https://www.saucedemo.com/checkout-step-one.html');
@@ -159,7 +159,7 @@ await page.keyboard.press('Tab');
 await expect(page.locator('#postal-code')).toBeFocused();
 });
 
-test('Cart number', async({page}) =>{
+test('should display correct number of items in the cart', async({page}) =>{
 await login(page);
 const selectedItems = [items[0],items[1], items[2]];
 
@@ -169,7 +169,7 @@ await addItemsToCart(page, selectedItems);
 
 });
 
-test('error input', async ({ page }) => {
+test('should display error messages for empty required fields', async ({ page }) => {
   await login(page);
   await addItemsToCart(page, [items[0]]);
 
@@ -191,7 +191,7 @@ test('error input', async ({ page }) => {
 
 });
 
-test('No error message on empty fields but show alert on continue', async ({ page }) => {
+test('should show alert when continuing with empty fields', async ({ page }) => {
   await login(page);
  await addItemsToCart(page, [items[0]]);
 
